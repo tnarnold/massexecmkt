@@ -17,9 +17,9 @@ author: Tiago Arnold <tiago@radaction.com.br>
 import subprocess as sub
 import sys
 
-command="/interface ethernet print"
+command="/system reboot"
 user="admin"
-password="senha"
+password="tscpass"
 
 handle = open("rtlist.txt",'r')
 herr=open("err.txt",'a')
@@ -34,18 +34,11 @@ for ip in ips:
     ssh = sub.Popen(["expect","conrt.exp",ip,user,password,command],shell=False,stdout=sub.PIPE,stderr=sub.PIPE)
     result =ssh.stdout.readlines()
     if  result == []:
-        herr.write(ip.strip()+" host not found\n")
-        error=ssh.stderr.readlines()
-        print >> sys.stderr,"ERROR: %s"% error
-    elif result[1].find("password")>-1:
-        herr.write(ip.strip()+" password invalid\n")
-        error=ssh.stderr.readlines()
-        print >> sys.stderr,"ERROR: %s"% error
+        herr.write(ip.strip()+" password error or host not found\n")
     else:
         hdone.write(ip.strip()+" command result executed:\n")
         result.pop(0)
         result.pop(len(result)-1)
-        print(result)
         for l in result:
             print(l.strip())
             hdone.write("    "+l.strip()+"\n")

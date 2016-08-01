@@ -7,11 +7,19 @@ set comm [lindex $argv 3]
 log_user 0
 spawn ssh -o StrictHostKeyChecking=no $user+ct@$host
 match_max 100000
-expect "password: "
-send -- "$pass\r"
-expect ">"
-send -- "$comm\r"
-expect ">"
-puts '$expect_out(buffer)'
-send -- "quit\r"
-expect eof
+expect {
+        password: {
+            send -- "$pass\r"
+        } " > " {
+            send -- "$comm\r"
+            expect "y/N" {send -- "y\r"}
+            expect " > "
+            send_user '$expect_out(buffer)'
+            send -- "quit\r"
+            expect eof
+        } timeout {
+            exit
+        } eof{
+            exit
+        }
+}
