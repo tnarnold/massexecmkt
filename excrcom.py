@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 This runs a command on a bach of remote mikrotik routers using SSH. You need have installed
-the expect tcl/tk interpreter on linux to this works. To use just put the IP Address of
+the paramiko library ("sudo pip install paramiko"). To use just put the IP Address of yours
 hosts in the rtlist.txt each line one host, change the variables user and password on this file
 and execute the fallowing command:
     python excrcom.py
