@@ -1,48 +1,44 @@
-
 #!/usr/bin/env python
-
 '''
-
 This runs a command on a bach of remote mikrotik routers using SSH. You need have installed
 the expect tcl/tk interpreter on linux to this works. To use just put the IP Address of
 hosts in the rtlist.txt each line one host, change the variables user and password on this file
 and execute the fallowing command:
-
     python excrcom.py
-
 author: Tiago Arnold <tiago@radaction.com.br>
-
 '''
-
-import subprocess as sub
+import paramiko
 import sys
 
-command="/system reboot"
-user="admin"
-password="tscpass"
-
-handle = open("rtlist.txt",'r')
+command='/ip address print'
+user='admin'
+password='tscpass'
+port=22
+hfh=open('rtlist.txt','r')
 herr=open("err.txt",'a')
 hdone=open("done.txt",'a')
-
-ips=handle.readlines();
-
 herr.truncate()
 hdone.truncate()
+def sshCommand(hostname, port, username, password, command):
+    try:
+        sshClient = paramiko.SSHClient()
+        sshClient.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        sshClient.load_system_host_keys()
+        sshClient.connect(hostname, port, username, password,allow_agent=False,look_for_keys=False,timeout=3)
+        stdin, stdout, stderr = sshClient.exec_command(command)
+        hdone.write(hostname.strip()+" command result executed:\n")
+        hdone.write(stdout.read()+"\n")
+        sshClient.close()
+    except Exception as e:
+        print(hostname.strip()+" - "+str(e))
+        herr.write(hostname.strip()+" - "+str(e).strip()+"\n")
 
-for ip in ips:
-    ssh = sub.Popen(["expect","conrt.exp",ip,user,password,command],shell=False,stdout=sub.PIPE,stderr=sub.PIPE)
-    result =ssh.stdout.readlines()
-    if  result == []:
-        herr.write(ip.strip()+" password error or host not found\n")
-    else:
-        hdone.write(ip.strip()+" command result executed:\n")
-        result.pop(0)
-        result.pop(len(result)-1)
-        for l in result:
-            print(l.strip())
-            hdone.write("    "+l.strip()+"\n")
-        hdone.write("\n")
-
-herr.close()
-hdone.close()
+if __name__ == '__main__':
+    ips=hfh.readlines();
+    for ip in ips:
+        h=ip.split()
+        sshCommand(h[0], port, user, password, command)
+        print(h[0]+" command executed\n")
+    herr.close()
+    hdone.close()
+    hfh.close()
