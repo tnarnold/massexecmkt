@@ -10,7 +10,7 @@ author: Tiago Arnold <tiago@radaction.com.br>
 import paramiko
 import sys
 
-command='/ip address print'
+command='/system reboot'
 user='admin'
 password='tscpass'
 port=22
@@ -26,7 +26,7 @@ def sshCommand(hostname, port, username, password, command):
         sshClient.load_system_host_keys()
         sshClient.connect(hostname, port, username, password,allow_agent=False,look_for_keys=False,timeout=3)
         stdin, stdout, stderr = sshClient.exec_command(command)
-        hdone.write(hostname.strip()+" command result executed:\n")
+        hdone.write(hostname.strip()+" command result executed:\n> "+command+"\n")
         hdone.write(stdout.read()+"\n")
         sshClient.close()
         print(hostname.strip()+" command executed\n")
