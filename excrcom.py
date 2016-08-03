@@ -31,7 +31,7 @@ def sshCommand(hostname, port, username, password, command):
         sshClient.close()
         print(hostname.strip()+" command executed\n")
     except Exception as e:
-        print(hostname.strip()+" - "+str(e))
+        print(hostname.strip()+" - "+str(e)+"\n")
         herr.write(hostname.strip()+" - "+str(e).strip()+"\n")
 
 if __name__ == '__main__':
