@@ -29,6 +29,7 @@ def sshCommand(hostname, port, username, password, command):
         hdone.write(hostname.strip()+" command result executed:\n")
         hdone.write(stdout.read()+"\n")
         sshClient.close()
+        print(hostname.strip()+" command executed\n")
     except Exception as e:
         print(hostname.strip()+" - "+str(e))
         herr.write(hostname.strip()+" - "+str(e).strip()+"\n")
@@ -38,7 +39,6 @@ if __name__ == '__main__':
     for ip in ips:
         h=ip.split()
         sshCommand(h[0], port, user, password, command)
-        print(h[0]+" command executed\n")
     herr.close()
     hdone.close()
     hfh.close()
