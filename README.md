@@ -1,2 +1,2 @@
 # massexecmkt
-Python Script to execute a command on massive mikrotik routers list
+Python Script to execute a command on a batch of mikrotik routers list
